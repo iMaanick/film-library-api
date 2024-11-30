@@ -1,7 +1,7 @@
 from typing import Optional
 
-from app.application.models import MovieCreate, Movie
-from app.application.protocols.database import MovieDatabaseGateway
+from app.application.models import MovieCreate, Movie, MovieUpdate
+from app.application.protocols.database import MovieDatabaseGateway, UoW
 
 
 async def add_movie(
@@ -26,4 +26,17 @@ async def get_movie_data(
         database: MovieDatabaseGateway,
 ) -> Optional[Movie]:
     movie = await database.get_movie_by_id(movie_id)
+    return movie
+
+
+async def update_movie(
+        movie_id: int,
+        movie_data: MovieUpdate,
+        database: MovieDatabaseGateway,
+        uow: UoW,
+) -> Optional[Movie]:
+    movie = await database.update_movie(movie_id, movie_data)
+    if not movie:
+        return None
+    await uow.commit()
     return movie

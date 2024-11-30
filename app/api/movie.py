@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.application.models import Movie, MovieCreate
-from app.application.movie import add_movie, get_movies_data, get_movie_data
-from app.application.protocols.database import MovieDatabaseGateway
+from app.application.models import Movie, MovieCreate, MovieUpdate
+from app.application.movie import add_movie, get_movies_data, get_movie_data, update_movie
+from app.application.protocols.database import MovieDatabaseGateway, UoW
 
 movie_router = APIRouter()
 
@@ -37,3 +37,17 @@ async def get_movie(
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found for specified movie_id.")
     return movie
+
+
+@movie_router.patch("/{movie_id}", response_model=Movie)
+async def update_movie_data(
+        movie_id: int,
+        movie_data: MovieUpdate,
+        database: Annotated[MovieDatabaseGateway, Depends()],
+        uow: Annotated[UoW, Depends()],
+
+) -> Movie:
+    updated_movie = await update_movie(movie_id, movie_data, database, uow)
+    if not updated_movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return updated_movie

@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.sqlalchemy_db import models
-from app.application.models import MovieCreate, Movie
+from app.application.models import MovieCreate, Movie, MovieUpdate
 from app.application.protocols.database import MovieDatabaseGateway
 
 
@@ -34,3 +34,17 @@ class MovieSqlaGateway(MovieDatabaseGateway):
         if movie:
             return Movie.model_validate(movie)
         return None
+
+    async def update_movie(self, movie_id: int, movie_data: MovieUpdate) -> Optional[Movie]:
+        result = await self.session.execute(
+            select(models.Movie).
+            where(models.Movie.id == movie_id)
+        )
+        movie = result.scalars().first()
+        if not movie:
+            return None
+        if movie_data.title:
+            movie.title = movie_data.title
+        if movie_data.description:
+            movie.description = movie_data.description
+        return Movie.model_validate(movie)

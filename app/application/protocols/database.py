@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from app.application.models import MovieCreate, Movie
+from app.application.models import MovieCreate, Movie, MovieUpdate
 
 
 class UoW(ABC):
@@ -25,4 +25,8 @@ class MovieDatabaseGateway(ABC):
 
     @abstractmethod
     async def get_movie_by_id(self, movie_id: int) -> Optional[Movie]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_movie(self, movie_id: int, movie_data: MovieUpdate) -> Optional[Movie]:
         raise NotImplementedError

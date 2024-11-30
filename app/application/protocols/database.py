@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from app.application.models import MovieCreate, Movie
+
 
 class UoW(ABC):
     @abstractmethod
@@ -11,5 +13,7 @@ class UoW(ABC):
         raise NotImplementedError
 
 
-class DatabaseGateway(ABC):
-    pass
+class MovieDatabaseGateway(ABC):
+    @abstractmethod
+    async def add_movie(self, movie_data: MovieCreate) -> Movie:
+        raise NotImplementedError

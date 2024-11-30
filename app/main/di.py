@@ -6,15 +6,15 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from app.adapters.sqlalchemy_db.gateway import SqlaGateway
+from app.adapters.sqlalchemy_db.gateway import MovieSqlaGateway
 from app.api.depends_stub import Stub
-from app.application.protocols.database import UoW, DatabaseGateway
+from app.application.protocols.database import UoW, MovieDatabaseGateway
 
 
 async def new_gateway(
         session: AsyncSession = Depends(Stub(AsyncSession))
-) -> AsyncGenerator[SqlaGateway, None]:
-    yield SqlaGateway(session)
+) -> AsyncGenerator[MovieSqlaGateway, None]:
+    yield MovieSqlaGateway(session)
 
 
 async def new_uow(
@@ -50,5 +50,5 @@ def init_dependencies(app: FastAPI) -> None:
     session_maker = create_session_maker()
 
     app.dependency_overrides[AsyncSession] = partial(new_session, session_maker)
-    app.dependency_overrides[DatabaseGateway] = new_gateway
+    app.dependency_overrides[MovieDatabaseGateway] = new_gateway
     app.dependency_overrides[UoW] = new_uow

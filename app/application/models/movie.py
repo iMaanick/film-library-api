@@ -18,3 +18,7 @@ class Movie(BaseModel):
     title: str
     description: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
+
+
+class DeleteMovieResponse(BaseModel):
+    detail: str

@@ -40,3 +40,15 @@ async def update_movie(
         return None
     await uow.commit()
     return movie
+
+
+async def delete_movie(
+        movie_id: int,
+        database: MovieDatabaseGateway,
+        uow: UoW,
+) -> Optional[Movie]:
+    deleted_movie = await database.delete_movie_by_id(movie_id)
+    if not deleted_movie:
+        return None
+    await uow.commit()
+    return deleted_movie

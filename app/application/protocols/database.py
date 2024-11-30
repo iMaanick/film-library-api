@@ -30,3 +30,7 @@ class MovieDatabaseGateway(ABC):
     @abstractmethod
     async def update_movie(self, movie_id: int, movie_data: MovieUpdate) -> Optional[Movie]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete_movie_by_id(self, movie_id: int) -> Optional[Movie]:
+        raise NotImplementedError

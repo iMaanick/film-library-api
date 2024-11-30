@@ -48,3 +48,12 @@ class MovieSqlaGateway(MovieDatabaseGateway):
         if movie_data.description:
             movie.description = movie_data.description
         return Movie.model_validate(movie)
+
+    async def delete_movie_by_id(self, movie_id: int) -> Optional[Movie]:
+        result = await self.session.execute(
+            select(models.Movie).where(models.Movie.id == movie_id))
+        movie = result.scalars().first()
+        if not movie:
+            return None
+        await self.session.delete(movie)
+        return Movie.model_validate(movie)

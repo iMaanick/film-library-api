@@ -1,7 +1,8 @@
 __all__ = [
     "Movie",
     "MovieCreate",
-    "MovieUpdate"
+    "MovieUpdate",
+    "DeleteMovieResponse",
 ]
 
-from .movie import Movie, MovieCreate, MovieUpdate
+from .movie import Movie, MovieCreate, MovieUpdate, DeleteMovieResponse

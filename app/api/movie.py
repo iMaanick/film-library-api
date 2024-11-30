@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.application.models import Movie, MovieCreate, MovieUpdate
-from app.application.movie import add_movie, get_movies_data, get_movie_data, update_movie
+from app.application.models import Movie, MovieCreate, MovieUpdate, DeleteMovieResponse
+from app.application.movie import add_movie, get_movies_data, get_movie_data, update_movie, delete_movie
 from app.application.protocols.database import MovieDatabaseGateway, UoW
 
 movie_router = APIRouter()
@@ -51,3 +51,15 @@ async def update_movie_data(
     if not updated_movie:
         raise HTTPException(status_code=404, detail="Movie not found")
     return updated_movie
+
+
+@movie_router.delete("/{movie_id}", response_model=DeleteMovieResponse)
+async def remove_movie(
+        movie_id: int,
+        database: Annotated[MovieDatabaseGateway, Depends()],
+        uow: Annotated[UoW, Depends()],
+) -> DeleteMovieResponse:
+    success = await delete_movie(movie_id, database, uow)
+    if not success:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return DeleteMovieResponse(detail="Movie deleted")

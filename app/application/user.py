@@ -19,3 +19,11 @@ async def get_users_data(
 ) -> list[User]:
     users = await database.get_users(skip, limit)
     return users
+
+
+async def get_user_data(
+        user_id: int,
+        database: UserDatabaseGateway,
+) -> Optional[User]:
+    user = await database.get_user_by_id(user_id)
+    return user

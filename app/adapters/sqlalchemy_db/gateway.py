@@ -83,3 +83,11 @@ class UserSqlaGateway(UserDatabaseGateway):
         result = await self.session.execute(query)
         users = [User.model_validate(user) for user in result.scalars().all()]
         return users
+
+    async def get_user_by_id(self, user_id: int) -> Optional[User]:
+        query = select(models.User).where(models.User.id == user_id).options(selectinload(models.User.favorites))
+        result = await self.session.execute(query)
+        user = result.scalars().first()
+        if user:
+            return User.model_validate(user)
+        return None

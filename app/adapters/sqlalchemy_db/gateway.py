@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,3 +26,11 @@ class MovieSqlaGateway(MovieDatabaseGateway):
         result = await self.session.execute(query)
         movies = [Movie.model_validate(movie) for movie in result.scalars().all()]
         return movies
+
+    async def get_movie_by_id(self, movie_id: int) -> Optional[Movie]:
+        query = select(models.Movie).where(models.Movie.id == movie_id)
+        result = await self.session.execute(query)
+        movie = result.scalars().first()
+        if movie:
+            return Movie.model_validate(movie)
+        return None

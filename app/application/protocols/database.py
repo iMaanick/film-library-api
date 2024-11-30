@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from app.application.models import MovieCreate, Movie, MovieUpdate
+from app.application.models import MovieCreate, Movie, MovieUpdate, UserCreate, User
 
 
 class UoW(ABC):
@@ -34,3 +34,10 @@ class MovieDatabaseGateway(ABC):
     @abstractmethod
     async def delete_movie_by_id(self, movie_id: int) -> Optional[Movie]:
         raise NotImplementedError
+
+
+class UserDatabaseGateway(ABC):
+    @abstractmethod
+    async def add_user(self, user_data: UserCreate) -> Optional[User]:
+        raise NotImplementedError
+

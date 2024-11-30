@@ -1,11 +1,12 @@
 from typing import Optional
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.sqlalchemy_db import models
-from app.application.models import MovieCreate, Movie, MovieUpdate
-from app.application.protocols.database import MovieDatabaseGateway
+from app.application.models import MovieCreate, Movie, MovieUpdate, User, UserCreate
+from app.application.protocols.database import MovieDatabaseGateway, UserDatabaseGateway
 
 
 class MovieSqlaGateway(MovieDatabaseGateway):
@@ -57,3 +58,21 @@ class MovieSqlaGateway(MovieDatabaseGateway):
             return None
         await self.session.delete(movie)
         return Movie.model_validate(movie)
+
+
+class UserSqlaGateway(UserDatabaseGateway):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def add_user(self, user_data: UserCreate) -> Optional[User]:
+        new_user = models.User(
+            username=user_data.username,
+            favorites=[]
+        )
+        self.session.add(new_user)
+        try:
+            await self.session.commit()
+            return User.model_validate(new_user)
+        except IntegrityError:
+            await self.session.rollback()
+            return None

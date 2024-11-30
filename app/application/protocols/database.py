@@ -41,3 +41,6 @@ class UserDatabaseGateway(ABC):
     async def add_user(self, user_data: UserCreate) -> Optional[User]:
         raise NotImplementedError
 
+    @abstractmethod
+    async def get_users(self, skip: int, limit: int) -> list[User]:
+        raise NotImplementedError

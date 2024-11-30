@@ -3,6 +3,7 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.adapters.sqlalchemy_db import models
 from app.application.models import MovieCreate, Movie, MovieUpdate, User, UserCreate
@@ -76,3 +77,9 @@ class UserSqlaGateway(UserDatabaseGateway):
         except IntegrityError:
             await self.session.rollback()
             return None
+
+    async def get_users(self, skip: int, limit: int) -> list[User]:
+        query = select(models.User).options(selectinload(models.User.favorites)).offset(skip).limit(limit)
+        result = await self.session.execute(query)
+        users = [User.model_validate(user) for user in result.scalars().all()]
+        return users

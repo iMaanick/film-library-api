@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.adapters.sqlalchemy_db import models
@@ -17,3 +18,9 @@ class MovieSqlaGateway(MovieDatabaseGateway):
         self.session.add(new_movie)
         await self.session.commit()
         return Movie.model_validate(new_movie)
+
+    async def get_movies(self, skip: int, limit: int) -> list[Movie]:
+        query = select(models.Movie).offset(skip).limit(limit)
+        result = await self.session.execute(query)
+        movies = [Movie.model_validate(movie) for movie in result.scalars().all()]
+        return movies

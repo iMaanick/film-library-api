@@ -17,3 +17,7 @@ class MovieDatabaseGateway(ABC):
     @abstractmethod
     async def add_movie(self, movie_data: MovieCreate) -> Movie:
         raise NotImplementedError
+
+    @abstractmethod
+    async def get_movies(self, skip: int, limit: int) -> list[Movie]:
+        raise NotImplementedError

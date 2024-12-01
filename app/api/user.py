@@ -52,7 +52,7 @@ async def update_user_data(
 ) -> User:
     updated_user = await update_user(user_id, user_data, database, uow)
     if not updated_user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found for specified user_id.")
     return updated_user
 
 
@@ -64,5 +64,5 @@ async def delete_user(
 ) -> DeleteUserResponse:
     deleted_user = await delete_user_by_id(user_id, database, uow)
     if not deleted_user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found for specified user_id.")
     return DeleteUserResponse(detail="User deleted")

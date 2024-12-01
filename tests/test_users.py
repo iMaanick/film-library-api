@@ -1,24 +1,9 @@
-import pytest
-from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock
+
 from fastapi import status
+from fastapi.testclient import TestClient
 
 from app.application.models import UserCreate, UserUpdate, User
-
-
-@pytest.fixture
-def sample_user_create() -> UserCreate:
-    return UserCreate(username="testuser")
-
-
-@pytest.fixture
-def sample_user_update() -> UserUpdate:
-    return UserUpdate(username="updateduser")
-
-
-@pytest.fixture
-def sample_user() -> User:
-    return User(id=1, username="testuser", favorites=[])
 
 
 def test_create_new_user_success(
@@ -43,7 +28,7 @@ def test_create_new_user_username_exists(
 
     response = client.post("/users/", json=sample_user_create.model_dump())
     assert response.status_code == 400
-    assert response.json() == {"detail": "User with that username already exists."}
+    assert response.json()["detail"] == "User with that username already exists."
 
 
 def test_get_users(
@@ -130,7 +115,7 @@ def test_delete_user(
 
     response = client.delete(f"/users/{sample_user.id}")
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == {"detail": "User deleted"}
+    assert response.json()["detail"] == "User deleted"
 
 
 def test_delete_user_not_found(

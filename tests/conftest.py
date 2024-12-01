@@ -4,14 +4,45 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from app.application.models import Movie, MovieCreate, MovieUpdate, UserCreate, UserUpdate, User
 from app.application.protocols.database import UserDatabaseGateway, MovieDatabaseGateway, UoW, FavoriteDatabaseGateway
 from app.main import init_routers
+
+
+@pytest.fixture
+async def sample_movie() -> Movie:
+    return Movie(id=1, title="Sample Movie", description="A test movie")
+
+
+@pytest.fixture
+async def sample_movie_create() -> MovieCreate:
+    return MovieCreate(title="Sample Movie", description="A test movie")
+
+
+@pytest.fixture
+async def sample_movie_update() -> MovieUpdate:
+    return MovieUpdate(title="Updated Title", description="Updated Description")
 
 
 @pytest.fixture
 def mock_user_gateway() -> UserDatabaseGateway:
     mock = AsyncMock(UserDatabaseGateway)
     return mock
+
+
+@pytest.fixture
+def sample_user_create() -> UserCreate:
+    return UserCreate(username="testuser")
+
+
+@pytest.fixture
+def sample_user_update() -> UserUpdate:
+    return UserUpdate(username="updateduser")
+
+
+@pytest.fixture
+def sample_user() -> User:
+    return User(id=1, username="testuser", favorites=[Movie(id=1917, title="Sample Movie", description="A test movie")])
 
 
 @pytest.fixture

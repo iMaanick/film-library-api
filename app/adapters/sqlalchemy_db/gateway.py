@@ -103,3 +103,14 @@ class UserSqlaGateway(UserDatabaseGateway):
             return None
         user.username = user_data.username
         return User.model_validate(user)
+
+    async def delete_user_by_id(self, user_id: int) -> Optional[User]:
+        result = await self.session.execute(
+            select(models.User).where(models.User.id == user_id)
+            .options(selectinload(models.User.favorites))
+        )
+        user = result.scalars().first()
+        if not user:
+            return None
+        await self.session.delete(user)
+        return User.model_validate(user)

@@ -16,3 +16,7 @@ class User(BaseModel):
     username: str
     favorites: list[Movie] = []
     model_config = ConfigDict(from_attributes=True)
+
+
+class DeleteUserResponse(BaseModel):
+    detail: str

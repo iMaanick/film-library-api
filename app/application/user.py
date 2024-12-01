@@ -40,3 +40,15 @@ async def update_user(
         return None
     await uow.commit()
     return user
+
+
+async def delete_user_by_id(
+        user_id: int,
+        database: UserDatabaseGateway,
+        uow: UoW,
+) -> Optional[User]:
+    deleted_user = await database.delete_user_by_id(user_id)
+    if not deleted_user:
+        return None
+    await uow.commit()
+    return deleted_user

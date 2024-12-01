@@ -3,8 +3,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.application.models import User, UserCreate, UserUpdate
+from app.application.models.user import DeleteUserResponse
 from app.application.protocols.database import UserDatabaseGateway, UoW
-from app.application.user import add_user, get_users_data, get_user_data, update_user
+from app.application.user import add_user, get_users_data, get_user_data, update_user, delete_user_by_id
 
 users_router = APIRouter()
 
@@ -54,13 +55,14 @@ async def update_user_data(
         raise HTTPException(status_code=404, detail="User not found")
     return updated_user
 
-# @users_router.delete("/{user_id}", response_model=DeleteMovieResponse)
-# async def remove_movie(
-#         user_id: int,
-#         database: Annotated[UserDatabaseGateway, Depends()],
-#         uow: Annotated[UoW, Depends()],
-# ) -> DeleteMovieResponse:
-#     success = await delete_movie(movie_id, database, uow)
-#     if not success:
-#         raise HTTPException(status_code=404, detail="Movie not found")
-#     return DeleteMovieResponse(detail="Movie deleted")
+
+@users_router.delete("/{user_id}", response_model=DeleteUserResponse)
+async def delete_user(
+        user_id: int,
+        database: Annotated[UserDatabaseGateway, Depends()],
+        uow: Annotated[UoW, Depends()],
+) -> DeleteUserResponse:
+    deleted_user = await delete_user_by_id(user_id, database, uow)
+    if not deleted_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return DeleteUserResponse(detail="User deleted")

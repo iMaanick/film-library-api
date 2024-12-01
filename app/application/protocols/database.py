@@ -52,3 +52,7 @@ class UserDatabaseGateway(ABC):
     @abstractmethod
     async def update_user(self, user_id: int, user_data: UserUpdate) -> Optional[User]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete_user_by_id(self, user_id: int) -> Optional[User]:
+        raise NotImplementedError

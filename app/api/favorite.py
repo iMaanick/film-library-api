@@ -20,6 +20,15 @@ async def add_to_favorites(
         movie_database: Annotated[MovieDatabaseGateway, Depends()],
         favorite_database: Annotated[FavoriteDatabaseGateway, Depends()],
 ) -> AddFavoriteResponse:
+    """
+    Add a movie to a user's favorites.
+
+    Returns:
+        AddFavoriteResponse: Response indicating successful addition.
+
+    Raises:
+        HTTPException: If the user or movie is not found, or the movie is already in favorites.
+    """
     user = await get_user_data(user_id, user_database)
     if not user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")
@@ -40,6 +49,15 @@ async def delete_from_favorites(
         favorite_database: Annotated[FavoriteDatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
 ) -> DeleteFavoriteResponse:
+    """
+    Remove a movie from a user's favorites.
+
+    Returns:
+        DeleteFavoriteResponse: Response indicating successful removal.
+
+    Raises:
+        HTTPException: If the user or movie is not found in the user's favorites.
+    """
     user = await get_user_data(user_id, user_database)
     if not user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")
@@ -54,6 +72,15 @@ async def get_user_favorites(
         user_id: int,
         database: Annotated[UserDatabaseGateway, Depends()]
 ) -> list[Movie]:
+    """
+    Retrieve a user's favorite movies.
+
+    Returns:
+        list[Movie]: List of the user's favorite movies.
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
     user = await get_user_data(user_id, database)
     if not user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")

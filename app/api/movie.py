@@ -14,6 +14,12 @@ async def create_new_movie(
         movie: MovieCreate,
         database: Annotated[MovieDatabaseGateway, Depends()],
 ) -> Movie:
+    """
+    Create a new movie entry in the database.
+
+    Returns:
+        Movie: The created movie object.
+    """
     movie = await add_movie(movie, database)
     return movie
 
@@ -24,6 +30,12 @@ async def get_movies(
         skip: int = 0,
         limit: int = 10,
 ) -> list[Movie]:
+    """
+    Retrieve a list of movies with optional pagination.
+
+    Returns:
+        list[Movie]: List of movie objects.
+    """
     movies = await get_movies_data(skip, limit, database)
     return movies
 
@@ -33,6 +45,15 @@ async def get_movie(
         movie_id: int,
         database: Annotated[MovieDatabaseGateway, Depends()],
 ) -> Movie:
+    """
+    Retrieve a specific movie by its ID.
+
+    Returns:
+        Movie: The requested movie object.
+
+    Raises:
+        HTTPException: If the movie is not found.
+    """
     movie = await get_movie_data(movie_id, database)
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found for specified movie_id.")
@@ -47,6 +68,15 @@ async def update_movie_data(
         uow: Annotated[UoW, Depends()],
 
 ) -> Movie:
+    """
+    Update an existing movie's data.
+
+    Returns:
+        Movie: The updated movie object.
+
+    Raises:
+        HTTPException: If the movie is not found.
+    """
     updated_movie = await update_movie(movie_id, movie_data, database, uow)
     if not updated_movie:
         raise HTTPException(status_code=404, detail="Movie not found")
@@ -59,6 +89,15 @@ async def delete_movie(
         database: Annotated[MovieDatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
 ) -> DeleteMovieResponse:
+    """
+    Delete a movie by its ID.
+
+    Returns:
+        DeleteMovieResponse: Confirmation of deletion.
+
+    Raises:
+        HTTPException: If the movie is not found.
+    """
     deleted_movie = await delete_movie_by_id(movie_id, database, uow)
     if not deleted_movie:
         raise HTTPException(status_code=404, detail="Movie not found")

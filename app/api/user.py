@@ -15,6 +15,15 @@ async def create_new_user(
         user_data: UserCreate,
         database: Annotated[UserDatabaseGateway, Depends()],
 ) -> User:
+    """
+    Create a new user.
+
+    Returns:
+        User: The created user object.
+
+    Raises:
+        HTTPException: If the username already exists.
+    """
     user = await add_user(user_data, database)
     if not user:
         raise HTTPException(status_code=400, detail="User with that username already exists.")
@@ -27,6 +36,12 @@ async def get_users(
         skip: int = 0,
         limit: int = 10,
 ) -> list[User]:
+    """
+    Retrieve a list of users.
+
+    Returns:
+        list[User]: List of users.
+    """
     users = await get_users_data(skip, limit, database)
     return users
 
@@ -36,6 +51,15 @@ async def get_user(
         user_id: int,
         database: Annotated[UserDatabaseGateway, Depends()],
 ) -> User:
+    """
+    Retrieve a user by ID.
+
+    Returns:
+        User: The user object if found.
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
     user = await get_user_data(user_id, database)
     if not user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")
@@ -48,8 +72,16 @@ async def update_user_data(
         user_data: UserUpdate,
         database: Annotated[UserDatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
-
 ) -> User:
+    """
+    Update an existing user's data.
+
+    Returns:
+        User: The updated user object.
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
     updated_user = await update_user(user_id, user_data, database, uow)
     if not updated_user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")
@@ -62,6 +94,15 @@ async def delete_user(
         database: Annotated[UserDatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
 ) -> DeleteUserResponse:
+    """
+    Delete a user by ID.
+
+    Returns:
+        DeleteUserResponse: Response indicating successful deletion.
+
+    Raises:
+        HTTPException: If the user is not found.
+    """
     deleted_user = await delete_user_by_id(user_id, database, uow)
     if not deleted_user:
         raise HTTPException(status_code=404, detail="User not found for specified user_id.")

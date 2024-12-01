@@ -11,7 +11,7 @@ movie_router = APIRouter()
 
 @movie_router.post("/", response_model=Movie)
 async def create_new_movie(
-        movie: MovieCreate,
+        movie_data: MovieCreate,
         database: Annotated[MovieDatabaseGateway, Depends()],
 ) -> Movie:
     """
@@ -20,7 +20,7 @@ async def create_new_movie(
     Returns:
         Movie: The created movie object.
     """
-    movie = await add_movie(movie, database)
+    movie = await add_movie(movie_data, database)
     return movie
 
 

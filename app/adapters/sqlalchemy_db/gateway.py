@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 
 from app.adapters.sqlalchemy_db import models
 from app.application.models import MovieCreate, Movie, MovieUpdate, User, UserCreate, UserUpdate
-from app.application.protocols.database import MovieDatabaseGateway, UserDatabaseGateway
+from app.application.protocols.database import MovieDatabaseGateway, UserDatabaseGateway, FavoriteDatabaseGateway
 
 
 class MovieSqlaGateway(MovieDatabaseGateway):
@@ -114,3 +114,12 @@ class UserSqlaGateway(UserDatabaseGateway):
             return None
         await self.session.delete(user)
         return User.model_validate(user)
+
+
+class FavoriteSqlaGateway(FavoriteDatabaseGateway):
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def add_favorite_movie(self, user_id: int, movie_id: int) -> None:
+        self.session.add(models.Favorite(user_id=user_id, movie_id=movie_id))
+        await self.session.commit()

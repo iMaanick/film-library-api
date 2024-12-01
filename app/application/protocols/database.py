@@ -56,3 +56,9 @@ class UserDatabaseGateway(ABC):
     @abstractmethod
     async def delete_user_by_id(self, user_id: int) -> Optional[User]:
         raise NotImplementedError
+
+
+class FavoriteDatabaseGateway(ABC):
+    @abstractmethod
+    async def add_favorite_movie(self, user_id: int, movie_id: int) -> None:
+        raise NotImplementedError

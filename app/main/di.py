@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from app.adapters.sqlalchemy_db.gateway import MovieSqlaGateway, UserSqlaGateway
+from app.adapters.sqlalchemy_db.gateway import MovieSqlaGateway, UserSqlaGateway, FavoriteSqlaGateway
 from app.api.depends_stub import Stub
-from app.application.protocols.database import UoW, MovieDatabaseGateway, UserDatabaseGateway
+from app.application.protocols.database import UoW, MovieDatabaseGateway, UserDatabaseGateway, FavoriteDatabaseGateway
 
 
 async def new_movie_gateway(
@@ -21,6 +21,12 @@ async def new_user_gateway(
         session: AsyncSession = Depends(Stub(AsyncSession))
 ) -> AsyncGenerator[UserSqlaGateway, None]:
     yield UserSqlaGateway(session)
+
+
+async def new_favorite_gateway(
+        session: AsyncSession = Depends(Stub(AsyncSession))
+) -> AsyncGenerator[FavoriteSqlaGateway, None]:
+    yield FavoriteSqlaGateway(session)
 
 
 async def new_uow(
@@ -58,5 +64,5 @@ def init_dependencies(app: FastAPI) -> None:
     app.dependency_overrides[AsyncSession] = partial(new_session, session_maker)
     app.dependency_overrides[MovieDatabaseGateway] = new_movie_gateway
     app.dependency_overrides[UserDatabaseGateway] = new_user_gateway
-
+    app.dependency_overrides[FavoriteDatabaseGateway] = new_favorite_gateway
     app.dependency_overrides[UoW] = new_uow

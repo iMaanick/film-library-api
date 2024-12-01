@@ -53,3 +53,14 @@ async def update_user_data(
     if not updated_user:
         raise HTTPException(status_code=404, detail="User not found")
     return updated_user
+
+# @users_router.delete("/{user_id}", response_model=DeleteMovieResponse)
+# async def remove_movie(
+#         user_id: int,
+#         database: Annotated[UserDatabaseGateway, Depends()],
+#         uow: Annotated[UoW, Depends()],
+# ) -> DeleteMovieResponse:
+#     success = await delete_movie(movie_id, database, uow)
+#     if not success:
+#         raise HTTPException(status_code=404, detail="Movie not found")
+#     return DeleteMovieResponse(detail="Movie deleted")

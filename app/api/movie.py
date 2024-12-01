@@ -59,7 +59,7 @@ async def remove_movie(
         database: Annotated[MovieDatabaseGateway, Depends()],
         uow: Annotated[UoW, Depends()],
 ) -> DeleteMovieResponse:
-    success = await delete_movie(movie_id, database, uow)
-    if not success:
+    deleted_movie = await delete_movie(movie_id, database, uow)
+    if not deleted_movie:
         raise HTTPException(status_code=404, detail="Movie not found")
     return DeleteMovieResponse(detail="Movie deleted")

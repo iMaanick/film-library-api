@@ -1,22 +1,22 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class MovieCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
+    title: str = Field(..., example="Inception")
+    description: Optional[str] = Field(None, example="A mind-bending thriller")
 
 
 class MovieUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: Optional[str] = Field(None, example="Inception")
+    description: Optional[str] = Field(None, example="A mind-bending thriller")
 
 
 class Movie(BaseModel):
-    id: int
-    title: str
-    description: Optional[str] = None
+    id: int = Field(..., example=101)
+    title: str = Field(..., example="Inception")
+    description: Optional[str] = Field(None, example="A mind-bending thriller")
     model_config = ConfigDict(from_attributes=True)
 
 

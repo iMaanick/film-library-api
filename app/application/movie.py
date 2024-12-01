@@ -42,7 +42,7 @@ async def update_movie(
     return movie
 
 
-async def delete_movie(
+async def delete_movie_by_id(
         movie_id: int,
         database: MovieDatabaseGateway,
         uow: UoW,

@@ -25,6 +25,8 @@ async def add_to_favorites(
     movie = await get_movie_data(movie_id, movie_database)
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found for specified movie_id.")
+    if is_movie_in_list(user.favorites, movie_id):
+        raise HTTPException(status_code=409, detail="Movie is already in favorites.")
     await add_favorite(user_id, movie_id, favorite_database)
     return AddFavoriteResponse(detail="Movie added to favorites")
 

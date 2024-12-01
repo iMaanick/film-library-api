@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.adapters.sqlalchemy_db import models
-from app.application.models import MovieCreate, Movie, MovieUpdate, User, UserCreate
+from app.application.models import MovieCreate, Movie, MovieUpdate, User, UserCreate, UserUpdate
 from app.application.protocols.database import MovieDatabaseGateway, UserDatabaseGateway
 
 
@@ -91,3 +91,15 @@ class UserSqlaGateway(UserDatabaseGateway):
         if user:
             return User.model_validate(user)
         return None
+
+    async def update_user(self, user_id: int, user_data: UserUpdate) -> Optional[User]:
+        result = await self.session.execute(
+            select(models.User).
+            where(models.User.id == user_id)
+            .options(selectinload(models.User.favorites))
+        )
+        user = result.scalars().first()
+        if not user:
+            return None
+        user.username = user_data.username
+        return User.model_validate(user)

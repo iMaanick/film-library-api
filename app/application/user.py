@@ -1,7 +1,7 @@
 from typing import Optional
 
-from app.application.models import User, UserCreate
-from app.application.protocols.database import UserDatabaseGateway
+from app.application.models import User, UserCreate, UserUpdate
+from app.application.protocols.database import UserDatabaseGateway, UoW
 
 
 async def add_user(
@@ -26,4 +26,17 @@ async def get_user_data(
         database: UserDatabaseGateway,
 ) -> Optional[User]:
     user = await database.get_user_by_id(user_id)
+    return user
+
+
+async def update_user(
+        user_id: int,
+        user_data: UserUpdate,
+        database: UserDatabaseGateway,
+        uow: UoW,
+) -> Optional[User]:
+    user = await database.update_user(user_id, user_data)
+    if not user:
+        return None
+    await uow.commit()
     return user

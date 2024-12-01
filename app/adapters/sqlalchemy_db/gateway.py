@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -123,3 +123,11 @@ class FavoriteSqlaGateway(FavoriteDatabaseGateway):
     async def add_favorite_movie(self, user_id: int, movie_id: int) -> None:
         self.session.add(models.Favorite(user_id=user_id, movie_id=movie_id))
         await self.session.commit()
+
+    async def delete_favorite_movie(self, user_id: int, movie_id: int) -> None:
+        await self.session.execute(
+            delete(models.Favorite).where(
+                models.Favorite.user_id == user_id,
+                models.Favorite.movie_id == movie_id
+            )
+        )

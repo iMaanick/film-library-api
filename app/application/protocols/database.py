@@ -62,3 +62,7 @@ class FavoriteDatabaseGateway(ABC):
     @abstractmethod
     async def add_favorite_movie(self, user_id: int, movie_id: int) -> None:
         raise NotImplementedError
+
+    @abstractmethod
+    async def delete_favorite_movie(self, user_id: int, movie_id: int) -> None:
+        raise NotImplementedError
